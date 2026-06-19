@@ -145,14 +145,15 @@ label {
   font-weight: 650;
 }
 
-label[hidden] { display: none; }
+[hidden] { display: none !important; }
 
 .field-hint {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   margin-left: 4px;
   border-radius: 50%;
   background: var(--gold-light);
@@ -160,8 +161,27 @@ label[hidden] { display: none; }
   font-size: 10px;
   font-weight: 800;
   font-style: normal;
-  cursor: help;
+  cursor: pointer;
+  user-select: none;
 }
+
+.field-hint .tip-bubble {
+  position: absolute;
+  z-index: 30;
+  bottom: calc(100% + 7px);
+  left: 0;
+  width: 230px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: 0 8px 20px rgba(23,33,58,.28);
+}
+
+.field-hint .tip-bubble[hidden] { display: none !important; }
 
 .span-2 { grid-column: 1 / -1; }
 
@@ -197,9 +217,21 @@ input:focus, select:focus, textarea:focus {
   line-height: 1.45;
 }
 
+.clauses-toggle {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #f8f9fb;
+  color: var(--navy);
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.clauses-toggle:hover { filter: brightness(0.98); }
+
 #clauses-list {
   display: grid;
   gap: 8px;
+  margin-top: 10px;
 }
 
 .clause-item {
@@ -207,11 +239,6 @@ input:focus, select:focus, textarea:focus {
   border-radius: 8px;
   padding: 10px 12px;
   background: #fbfbfc;
-}
-
-.clause-item.is-disabled {
-  background: #f1f2f4;
-  opacity: 0.62;
 }
 
 .clause-head {
@@ -237,7 +264,16 @@ input:focus, select:focus, textarea:focus {
   line-height: 1.35;
 }
 
+.clause-head small {
+  display: block;
+  margin-top: 1px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
 .clause-text {
+  display: none;
   margin-top: 8px;
   min-height: 56px;
   font-size: 12.5px;
@@ -246,7 +282,8 @@ input:focus, select:focus, textarea:focus {
   color: var(--text);
 }
 
-.clause-item.is-disabled .clause-text { background: #f6f6f7; color: var(--muted); }
+.clause-item.is-editing { background: #fff; border-color: var(--gold-light); }
+.clause-item.is-editing .clause-text { display: block; }
 
 .preview-pane {
   position: relative;

@@ -4,6 +4,8 @@ const preview = document.getElementById('preview');
 const loading = document.getElementById('preview-loading');
 const pageCount = document.getElementById('page-count');
 const clausesList = document.getElementById('clauses-list');
+const clausesToggle = document.getElementById('clauses-toggle');
+const clausesHint = document.getElementById('clauses-hint');
 const parcelasField = document.getElementById('parcelas-field');
 
 const GOLD = [179, 135, 49];
@@ -156,7 +158,7 @@ function getDraft() {
     if (parts[0] === 'clauses') {
       const [, id, field] = parts;
       draft.clauses[id] = draft.clauses[id] || {};
-      draft.clauses[id][field] = field === 'enabled' ? element.checked : element.value;
+      draft.clauses[id][field] = element.type === 'checkbox' ? element.checked : element.value;
     } else {
       const [group, field] = parts;
       if (draft[group]) draft[group][field] = element.value;
@@ -199,20 +201,23 @@ function renderClausesUI(savedClauses = {}) {
   clausesList.innerHTML = '';
   DEFAULT_CLAUSES.forEach(clause => {
     const saved = savedClauses[clause.id] || {};
-    const enabled = saved.enabled !== undefined ? saved.enabled : true;
+    const editing = saved.editing === true;
     const text = saved.text !== undefined ? saved.text : clause.text;
 
     const item = document.createElement('div');
-    item.className = 'clause-item' + (enabled ? '' : ' is-disabled');
+    item.className = 'clause-item' + (editing ? ' is-editing' : '');
 
     const head = document.createElement('label');
     head.className = 'clause-head';
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.name = `clauses.${clause.id}.enabled`;
-    checkbox.checked = enabled;
+    checkbox.name = `clauses.${clause.id}.editing`;
+    checkbox.checked = editing;
     const span = document.createElement('span');
     span.textContent = `${clause.id}. ${clause.title}`;
+    const small = document.createElement('small');
+    small.textContent = 'Editar';
+    span.appendChild(small);
     head.appendChild(checkbox);
     head.appendChild(span);
 
@@ -221,17 +226,23 @@ function renderClausesUI(savedClauses = {}) {
     textarea.name = `clauses.${clause.id}.text`;
     textarea.rows = Math.min(7, Math.max(2, Math.ceil(text.length / 68)));
     textarea.value = text;
-    textarea.disabled = !enabled;
 
     checkbox.addEventListener('change', () => {
-      item.classList.toggle('is-disabled', !checkbox.checked);
-      textarea.disabled = !checkbox.checked;
+      item.classList.toggle('is-editing', checkbox.checked);
     });
 
     item.appendChild(head);
     item.appendChild(textarea);
     clausesList.appendChild(item);
   });
+}
+
+function setClausesToggle(open) {
+  clausesList.hidden = !open;
+  clausesHint.hidden = !open;
+  clausesToggle.textContent = open
+    ? 'Ocultar cláusulas contratuais'
+    : `Mostrar cláusulas contratuais (${DEFAULT_CLAUSES.length})`;
 }
 
 function getActiveClauses(draft) {
@@ -241,10 +252,9 @@ function getActiveClauses(draft) {
       return {
         title: clause.title,
         text: saved.text !== undefined ? saved.text : clause.text,
-        enabled: saved.enabled !== undefined ? saved.enabled : true,
       };
     })
-    .filter(c => c.enabled && clean(c.text));
+    .filter(c => clean(c.text));
 }
 
 function buildAddress(person) {
@@ -631,7 +641,7 @@ async function updatePreview() {
       const blob = doc.output('blob');
       if (state.previewUrl) URL.revokeObjectURL(state.previewUrl);
       state.previewUrl = URL.createObjectURL(blob);
-      preview.src = state.previewUrl;
+      preview.src = `${state.previewUrl}#view=FitH`;
       pageCount.textContent = `${doc.getNumberOfPages()} página${doc.getNumberOfPages() === 1 ? '' : 's'} · A4`;
     } catch (error) {
       console.error(error);
@@ -645,6 +655,30 @@ async function updatePreview() {
 form.elements['params.entradaForma']?.addEventListener('change', () => {
   updateParcelasVisibility();
 });
+
+clausesToggle.addEventListener('click', () => {
+  setClausesToggle(clausesList.hidden);
+});
+
+function closeAllTips() {
+  document.querySelectorAll('.field-hint .tip-bubble').forEach(bubble => bubble.remove());
+}
+
+document.querySelectorAll('.field-hint').forEach(hint => {
+  hint.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const existing = hint.querySelector('.tip-bubble');
+    closeAllTips();
+    if (existing) return;
+    const bubble = document.createElement('span');
+    bubble.className = 'tip-bubble';
+    bubble.textContent = hint.dataset.tip;
+    hint.appendChild(bubble);
+  });
+});
+
+document.addEventListener('click', () => closeAllTips());
 
 form.addEventListener('input', () => {
   saveDraft();
@@ -682,6 +716,7 @@ document.getElementById('clear').addEventListener('click', () => {
   localStorage.removeItem(STORAGE_KEY);
   form.reset();
   renderClausesUI({});
+  setClausesToggle(false);
   form.elements['document.location'].value = 'Silvânia/GO';
   form.elements['document.date'].value = todayISO();
   form.elements['document.filename'].value = 'contrato-de-honorarios';
@@ -696,6 +731,8 @@ window.addEventListener('beforeunload', () => {
 async function init() {
   const draft = loadDraft();
   renderClausesUI(draft.clauses || {});
+  const anyEditing = Object.values(draft.clauses || {}).some(c => c.editing);
+  setClausesToggle(anyEditing);
   setDraft(draft);
   try {
     await loadAssets();

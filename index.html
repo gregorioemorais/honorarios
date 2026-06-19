@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#17213a">
     <title>Gerador de Contrato de Honorários</title>
-    <link rel="stylesheet" href="./assets/styles.css?v=3">
+    <link rel="stylesheet" href="./assets/styles.css?v=4">
     <script src="./assets/jspdf.umd.min.js"></script>
-    <script src="./assets/app.js?v=3" defer></script>
+    <script src="./assets/app.js?v=4" defer></script>
   </head>
   <body>
     <header class="topbar">
@@ -56,8 +56,8 @@
           <fieldset>
             <legend>Quadro de parâmetros da contratação</legend>
             <div class="field-grid">
-              <label class="span-2">1. Objeto da atuação jurídica <span class="field-hint" title="Exemplo: ingressar e acompanhar a ação de…">i</span><textarea name="params.objeto" rows="2"></textarea></label>
-              <label class="span-2">2. Limite da atuação <span class="field-hint" title="Geralmente até sentença de mérito">i</span><input name="params.limite"></label>
+              <label class="span-2">1. Objeto da atuação jurídica <span class="field-hint" data-tip="Exemplo: ingressar e acompanhar a ação de…">i</span><textarea name="params.objeto" rows="2"></textarea></label>
+              <label class="span-2">2. Limite da atuação <span class="field-hint" data-tip="Geralmente até sentença de mérito">i</span><input name="params.limite"></label>
             </div>
 
             <div class="sub-legend">3. Honorários contratuais</div>
@@ -77,20 +77,21 @@
             </div>
 
             <div class="field-grid">
-              <label class="span-2">4. Serviços incluídos <span class="field-hint" title="Exemplo: análise documental, orientação jurídica, elaboração de peças, protocolo, acompanhamento processual e atuação em audiências e atos necessários, no primeiro grau, até sentença de mérito, dentro das demandas descritas anteriormente.">i</span><textarea name="params.servicosIncluidos" rows="2"></textarea></label>
-              <label class="span-2">5. Serviços não incluídos (exigem aditivo contratual) <span class="field-hint" title="Exemplo: recursos, atuação em instâncias superiores, cumprimento de sentença, ações autônomas, perícias, despesas com deslocamento, cópias, diligências externas, custas, emolumentos e demais atos não compreendidos neste contrato.">i</span><textarea name="params.servicosNaoIncluidos" rows="2"></textarea></label>
+              <label class="span-2">4. Serviços incluídos <span class="field-hint" data-tip="Exemplo: análise documental, orientação jurídica, elaboração de peças, protocolo, acompanhamento processual e atuação em audiências e atos necessários, no primeiro grau, até sentença de mérito, dentro das demandas descritas anteriormente.">i</span><textarea name="params.servicosIncluidos" rows="2"></textarea></label>
+              <label class="span-2">5. Serviços não incluídos (exigem aditivo contratual) <span class="field-hint" data-tip="Exemplo: recursos, atuação em instâncias superiores, cumprimento de sentença, ações autônomas, perícias, despesas com deslocamento, cópias, diligências externas, custas, emolumentos e demais atos não compreendidos neste contrato.">i</span><textarea name="params.servicosNaoIncluidos" rows="2"></textarea></label>
             </div>
 
             <div class="sub-legend">6. Rescisão pelo contratante</div>
             <div class="field-grid">
-              <label>Multa rescisória (%) <span class="field-hint" title="Padrão: 20%">i</span><input name="params.multaRescisoria" inputmode="decimal"></label>
+              <label>Multa rescisória (%) <span class="field-hint" data-tip="Padrão: 20%">i</span><input name="params.multaRescisoria" inputmode="decimal"></label>
             </div>
           </fieldset>
 
           <fieldset>
             <legend>Cláusulas contratuais</legend>
-            <p class="hint">Desmarque para remover uma cláusula do contrato, ou edite o texto conforme o caso. A numeração é ajustada automaticamente na prévia.</p>
-            <div id="clauses-list"></div>
+            <button type="button" id="clauses-toggle" class="button secondary clauses-toggle">Mostrar cláusulas contratuais (18)</button>
+            <p class="hint" id="clauses-hint" hidden>Todas as cláusulas entram no contrato com a redação padrão. Marque "Editar" em uma cláusula para personalizar o texto ou apague-o para removê-la. A numeração é ajustada automaticamente na prévia.</p>
+            <div id="clauses-list" hidden></div>
           </fieldset>
 
           <fieldset>
