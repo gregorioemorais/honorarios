@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#17213a">
+    <title>Gerador de Contrato de Honorários</title>
+    <link rel="stylesheet" href="./assets/styles.css">
+    <script src="./assets/jspdf.umd.min.js"></script>
+    <script src="./assets/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Gerador de Contrato de Honorários">
+        <img src="./assets/logo.png" alt="">
+        <span><strong>Contrato de Honorários</strong><small>Gregório &amp; Morais Advogados</small></span>
+      </a>
+      <div class="top-actions">
+        <button id="clear" class="button secondary" type="button">Limpar</button>
+        <button id="print" class="button secondary" type="button">Imprimir</button>
+        <button id="download" class="button primary" type="button">Gerar PDF</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="form-pane" aria-label="Dados do contrato">
+        <form id="document-form" autocomplete="on">
+          <fieldset>
+            <legend>Contratante</legend>
+            <div class="field-grid">
+              <label class="span-2">Nome completo<input name="person.name" autocomplete="name"></label>
+              <label>Nacionalidade<input name="person.nationality"></label>
+              <label>Estado civil<input name="person.maritalStatus"></label>
+              <label>Profissão<input name="person.profession"></label>
+              <label>RG<input name="person.rg"></label>
+              <label>Órgão expedidor<input name="person.rgIssuer"></label>
+              <label>CPF<input name="person.cpf" inputmode="numeric"></label>
+              <label>Telefone/WhatsApp<input name="person.phone" inputmode="tel"></label>
+              <label class="span-2">E-mail<input name="person.email" type="email" autocomplete="email"></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Endereço do contratante</legend>
+            <div class="field-grid">
+              <label class="span-2">Logradouro<input name="person.street" autocomplete="street-address"></label>
+              <label>Número<input name="person.number"></label>
+              <label>Complemento<input name="person.complement"></label>
+              <label>Bairro<input name="person.neighborhood"></label>
+              <label>CEP<input name="person.zip" inputmode="numeric" autocomplete="postal-code"></label>
+              <label>Cidade<input name="person.city" autocomplete="address-level2"></label>
+              <label>UF<input name="person.state" maxlength="2" autocomplete="address-level1"></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Quadro de parâmetros da contratação</legend>
+            <div class="field-grid">
+              <label class="span-2">1. Objeto da atuação jurídica<textarea name="params.objeto" rows="2"></textarea></label>
+              <label class="span-2">2. Limite da atuação<input name="params.limite"></label>
+            </div>
+
+            <div class="sub-legend">3. Honorários contratuais</div>
+            <div class="field-grid">
+              <label>Entrada (R$)<input name="params.entradaValor" inputmode="decimal"></label>
+              <label>Forma de pagamento
+                <select name="params.entradaForma">
+                  <option value="">Não informar</option>
+                  <option value="vista">À vista</option>
+                  <option value="parcelado">Parcelado</option>
+                </select>
+              </label>
+              <label id="parcelas-field" hidden>Número de parcelas<input name="params.entradaParcelas" inputmode="numeric"></label>
+              <label>Vencimento (data ou condição)<input name="params.entradaVencimento"></label>
+              <label>Honorários de êxito (%)<input name="params.exitoPercentual" inputmode="decimal"></label>
+              <label class="span-2">Base de cálculo do êxito<input name="params.exitoBase" placeholder="valor principal, correção monetária e juros"></label>
+            </div>
+
+            <div class="field-grid">
+              <label class="span-2">4. Serviços incluídos<textarea name="params.servicosIncluidos" rows="2"></textarea></label>
+              <label class="span-2">5. Serviços não incluídos (exigem aditivo contratual)<textarea name="params.servicosNaoIncluidos" rows="2"></textarea></label>
+            </div>
+
+            <div class="sub-legend">6. Rescisão pelo contratante</div>
+            <div class="field-grid">
+              <label>Multa rescisória (%)<input name="params.multaRescisoria" inputmode="decimal"></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Cláusulas contratuais</legend>
+            <p class="hint">Desmarque para remover uma cláusula do contrato, ou edite o texto conforme o caso. A numeração é ajustada automaticamente na prévia.</p>
+            <div id="clauses-list"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Fechamento</legend>
+            <div class="field-grid">
+              <label>Local<input name="document.location" value="Silvânia/GO"></label>
+              <label>Data<input name="document.date" type="date"></label>
+              <label class="span-2">Nome do arquivo<input name="document.filename" value="contrato-de-honorarios"></label>
+            </div>
+          </fieldset>
+        </form>
+      </section>
+
+      <section class="preview-pane" aria-label="Prévia do PDF">
+        <header><strong>Prévia</strong><span id="page-count">A4</span></header>
+        <iframe id="preview" title="Prévia do contrato"></iframe>
+        <div id="preview-loading" class="preview-loading">Gerando prévia…</div>
+      </section>
+    </main>
+  </body>
+</html>
