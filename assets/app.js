@@ -8,6 +8,12 @@ const clausesToggle = document.getElementById('clauses-toggle');
 const clausesHint = document.getElementById('clauses-hint');
 const parcelasField = document.getElementById('parcelas-field');
 const pagamentoPersonalizadoField = document.getElementById('pagamento-personalizado-field');
+const valorField = document.getElementById('valor-field');
+const valorLabel = document.getElementById('valor-label');
+const vencimentoField = document.getElementById('vencimento-field');
+const vencimentoLabel = document.getElementById('vencimento-label');
+const exitoFields = ['exito-percentual-field', 'exito-base-field', 'exito-condicao-field']
+  .map(id => document.getElementById(id));
 const peopleContainer = document.getElementById('people-container');
 const addPersonBtn = document.getElementById('add-person');
 
@@ -53,14 +59,14 @@ const CONTRATADA_TEXT = 'Adauto Aparecido de Morais, inscrito na OAB/GO, sob o n
 
 const DEFAULT_CLAUSES = [
   { id: 1, title: 'DO OBJETO', text: 'A CONTRATADA prestará os serviços advocatícios descritos no Quadro de Parâmetros da Contratação, observados o objeto e os limites ali definidos.' },
-  { id: 2, title: 'DOS HONORÁRIOS', text: 'Os honorários devidos pela prestação dos serviços são aqueles estabelecidos no Quadro de Parâmetros da Contratação, que integra este contrato.\nI - O inadimplemento acarretará multa moratória de 1% ao mês e juros de mora de 2% ao mês, calculados pro rata die.\nII - Após 30 dias de atraso, poderá a CONTRATADA considerar rescindido o contrato e exigir o pagamento imediato dos valores devidos, além das despesas incorridas.' },
+  { id: 2, title: 'DOS HONORÁRIOS', text: 'Os honorários devidos pela prestação dos serviços são aqueles estabelecidos no Quadro de Parâmetros da Contratação, que integra este contrato.\nI - Em caso de inadimplemento, incidirão multa de 1% e juros de mora de 2% ao mês, calculados pro rata die.\nII - Após 30 dias de atraso, poderá a CONTRATADA considerar rescindido o contrato e exigir o pagamento imediato dos valores devidos, além das despesas incorridas.' },
   { id: 3, title: 'DO INADIMPLEMENTO E SUSPENSÃO DA ATUAÇÃO', text: 'O inadimplemento autoriza a CONTRATADA a suspender a prática de atos não urgentes, sem prejuízo da adoção das medidas éticas cabíveis, inclusive renúncia ao mandato, permanecendo exigíveis os honorários vencidos e proporcionais ao trabalho realizado.' },
   { id: 4, title: 'DA CIÊNCIA, ADEQUAÇÃO E LIVRE PACTUAÇÃO', text: 'O CONTRATANTE declara que os honorários foram livremente pactuados, compatíveis com a complexidade da causa, grau de zelo profissional e tempo estimado de dedicação, tendo sido devidamente esclarecida a distinção entre honorários contratuais e sucumbenciais.' },
   { id: 5, title: 'DAS DESPESAS', text: 'Custas, taxas e despesas extraordinárias correrão por conta do CONTRATANTE, mediante prévia comunicação, podendo a CONTRATADA adiantar despesas de pequeno valor até o limite de R$ 150,00.' },
   { id: 6, title: 'DAS OBRIGAÇÕES DO CONTRATANTE', text: 'Compete ao CONTRATANTE fornecer informações e documentos verídicos, manter seus dados atualizados, arcar com despesas comunicadas e efetuar os pagamentos pactuados.' },
   { id: 7, title: 'DO ACORDO OU RECEBIMENTO DIRETO', text: 'Qualquer valor recebido direta ou indiretamente pelo CONTRATANTE, por acordo judicial, extrajudicial ou composição informal relacionada ao objeto deste contrato, ainda que sem a intervenção da CONTRATADA, tornará imediatamente exigíveis os honorários contratuais e de êxito previstos no Quadro de Parâmetros da Contratação.' },
   { id: 8, title: 'DA EXCLUSIVIDADE', text: 'O CONTRATANTE compromete-se a não constituir outro patrono para o mesmo objeto sem ciência da CONTRATADA, sob pena de exigibilidade integral dos honorários.' },
-  { id: 9, title: 'DA RESCISÃO', text: 'O contrato poderá ser rescindido por qualquer das partes mediante notificação escrita. Em caso de rescisão imotivada, desistência ou revogação do mandato pelo CONTRATANTE, aplicam-se as condições previstas no Quadro de Parâmetros da Contratação, permanecendo irrestituível eventual valor pago a título de entrada, o qual será imputado aos serviços já prestados ou disponibilizados pela CONTRATADA, sem prejuízo da cobrança de valores adicionais proporcionais ao trabalho realizado e da multa rescisória, se prevista.' },
+  { id: 9, title: 'DA RESCISÃO', text: 'O contrato poderá ser rescindido por qualquer das partes mediante notificação escrita. Em caso de rescisão imotivada, desistência ou revogação do mandato pelo CONTRATANTE, aplicam-se as condições previstas no Quadro de Parâmetros da Contratação. Os valores já pagos serão imputados aos serviços efetivamente prestados ou disponibilizados pela CONTRATADA, observada a proporcionalidade do trabalho realizado, sem prejuízo da multa rescisória, se prevista.' },
   { id: 10, title: 'DA IRREVOGABILIDADE E IRRETRATABILIDADE', text: 'O presente contrato é celebrado em caráter irrevogável e irretratável, ressalvadas as hipóteses legais ou rescisão por mútuo acordo.' },
   { id: 11, title: 'DO LEVANTAMENTO DE VALORES', text: 'A CONTRATADA poderá requerer a expedição de alvará em seu nome para levantamento de honorários contratuais e sucumbenciais.' },
   { id: 12, title: 'DA PROTEÇÃO DE DADOS', text: 'O tratamento de dados pessoais observará a Lei nº 13.709/2018, limitando-se ao necessário à execução deste contrato.' },
@@ -71,6 +77,12 @@ const DEFAULT_CLAUSES = [
   { id: 17, title: 'DAS DISPOSIÇÕES GERAIS', text: 'A eventual tolerância ao descumprimento contratual não implica renúncia de direitos. As obrigações estendem-se aos sucessores das partes.' },
   { id: 18, title: 'DO FORO', text: 'Fica eleito o foro da Comarca de Silvânia-GO para dirimir controvérsias decorrentes deste contrato.' },
 ];
+
+const LEGACY_DEFAULT_HONORARIOS_CLAUSES = [
+  'Os honorários devidos pela prestação dos serviços são aqueles estabelecidos no Quadro de Parâmetros da Contratação, que integra este contrato.\nI - O inadimplemento acarretará multa moratória de 1% ao mês e juros de mora de 2% ao mês, calculados pro rata die.\nII - Após 30 dias de atraso, poderá a CONTRATADA considerar rescindido o contrato e exigir o pagamento imediato dos valores devidos, além das despesas incorridas.',
+  'Os honorários devidos pela prestação dos serviços são aqueles estabelecidos no Quadro de Parâmetros da Contratação, que integra este contrato.\nI - O inadimplemento acarretará multa moratória de 1% e juros de mora de 2% ao mês, com cálculo pro rata die.\nII - Após 30 dias de atraso, poderá a CONTRATADA considerar rescindido o contrato e exigir o pagamento imediato dos valores devidos, além das despesas incorridas.',
+];
+const LEGACY_DEFAULT_RESCISAO_CLAUSE = 'O contrato poderá ser rescindido por qualquer das partes mediante notificação escrita. Em caso de rescisão imotivada, desistência ou revogação do mandato pelo CONTRATANTE, aplicam-se as condições previstas no Quadro de Parâmetros da Contratação, permanecendo irrestituível eventual valor pago a título de entrada, o qual será imputado aos serviços já prestados ou disponibilizados pela CONTRATADA, sem prejuízo da cobrança de valores adicionais proporcionais ao trabalho realizado e da multa rescisória, se prevista.';
 
 function strokeIcon(doc, color, weight, fn) {
   doc.setDrawColor(...color);
@@ -352,6 +364,18 @@ function updateParcelasVisibility() {
   const forma = form.elements['params.entradaForma']?.value;
   parcelasField.hidden = forma !== 'parcelado';
   pagamentoPersonalizadoField.hidden = forma !== 'personalizado';
+  valorField.hidden = ['exito', 'personalizado'].includes(forma);
+  vencimentoField.hidden = ['exito', 'personalizado'].includes(forma);
+  exitoFields.forEach(field => { field.hidden = !['exito', 'misto'].includes(forma); });
+
+  const labels = {
+    vista: ['Valor total (R$)', 'Vencimento'],
+    parcelado: ['Valor total (R$)', 'Vencimento da primeira parcela'],
+    mensal: ['Valor mensal (R$)', 'Dia ou condição do vencimento mensal'],
+    etapas: ['Valor total, se aplicável (R$)', 'Etapas, valores e vencimentos'],
+    misto: ['Valor da parcela fixa (R$)', 'Vencimento da parcela fixa'],
+  };
+  [valorLabel.textContent, vencimentoLabel.textContent] = labels[forma] || ['Valor dos honorários (R$)', 'Vencimento ou condição'];
 }
 
 function autoSizeTextarea(textarea) {
@@ -368,7 +392,9 @@ function renderClausesUI(savedClauses = {}) {
   DEFAULT_CLAUSES.forEach(clause => {
     const saved = savedClauses[clause.id] || {};
     const editing = saved.editing === true;
-    const text = saved.text !== undefined ? saved.text : clause.text;
+    let text = saved.text !== undefined ? saved.text : clause.text;
+    if (clause.id === 2 && LEGACY_DEFAULT_HONORARIOS_CLAUSES.includes(text)) text = clause.text;
+    if (clause.id === 9 && text === LEGACY_DEFAULT_RESCISAO_CLAUSE) text = clause.text;
 
     const item = document.createElement('div');
     item.className = 'clause-item' + (editing ? ' is-editing' : '');
@@ -483,20 +509,43 @@ function buildContratanteText(person) {
 
 function buildHonorariosBullets(p) {
   const bullets = [];
-  const entradaParts = [];
-  if (clean(p.entradaValor)) entradaParts.push(`R$ ${clean(p.entradaValor)}`);
-  const formaLabels = { vista: 'à vista', mensal: 'mensal (consultoria/assessoria)', etapas: 'por etapas ou atos', exito: 'somente no êxito', misto: 'fixo + êxito' };
-  if (p.entradaForma === 'parcelado') entradaParts.push(`parcelado em ${clean(p.entradaParcelas) || 'X'} parcelas`);
-  else if (formaLabels[p.entradaForma]) entradaParts.push(formaLabels[p.entradaForma]);
-  if (clean(p.entradaVencimento)) entradaParts.push(`vencimento em ${clean(p.entradaVencimento)}`);
-  if (entradaParts.length) bullets.push({ label: 'Forma de pagamento', value: `${joinParts(entradaParts)}.` });
-  if (p.entradaForma === 'personalizado' && clean(p.pagamentoPersonalizado)) {
-    bullets.push({ label: 'Forma de pagamento personalizada', value: `${clean(p.pagamentoPersonalizado).replace(/\.$/, '')}.` });
-  }
+  const forma = clean(p.entradaForma);
+  const valor = clean(p.entradaValor);
+  const vencimento = clean(p.entradaVencimento);
+  const percentual = clean(p.exitoPercentual);
+  const base = clean(p.exitoBase) || 'proveito econômico efetivamente obtido';
+  const condicaoExito = clean(p.exitoCondicao) || 'houver recebimento ou disponibilização do proveito econômico ao CONTRATANTE';
+  const contextualize = value => /^(em|no|na|nos|nas|até|após|quando|mediante|todo|toda|cada|dia)\b/i.test(value) ? value : `em ${value}`;
+  const successTiming = /^(quando|após|com|no|na|nos|nas|em)\b/i.test(condicaoExito)
+    ? condicaoExito : `quando ${condicaoExito}`;
 
-  if (clean(p.exitoPercentual)) {
-    const base = clean(p.exitoBase) || 'valor principal, correção monetária e juros';
-    bullets.push({ label: 'Honorários de êxito', value: `${clean(p.exitoPercentual)}% calculado sobre ${base}.` });
+  if (forma === 'vista' && valor) {
+    const due = vencimento ? `, com vencimento ${contextualize(vencimento)}` : '';
+    bullets.push({ label: 'Pagamento à vista', value: `O valor total de R$ ${valor} será pago em parcela única${due}.` });
+  } else if (forma === 'parcelado' && valor) {
+    const parcelas = clean(p.entradaParcelas) || '[número de]';
+    const due = vencimento ? `, vencendo-se a primeira ${contextualize(vencimento)}` : '';
+    bullets.push({ label: 'Pagamento parcelado', value: `O valor total de R$ ${valor} será pago em ${parcelas} parcelas iguais e sucessivas${due}.` });
+  } else if (forma === 'mensal' && valor) {
+    const due = vencimento ? `, com vencimento ${contextualize(vencimento)}` : '';
+    bullets.push({ label: 'Honorários mensais', value: `Pela consultoria ou assessoria continuada, serão devidos honorários mensais de R$ ${valor}${due}.` });
+  } else if (forma === 'etapas') {
+    const total = valor ? `, no valor total de R$ ${valor},` : '';
+    const schedule = vencimento ? `, conforme o seguinte cronograma: ${vencimento.replace(/\.$/, '')}` : '';
+    bullets.push({ label: 'Pagamento por etapas ou atos', value: `Os honorários${total} serão exigíveis à medida que forem concluídas as etapas ou praticados os atos contratados${schedule}.` });
+  } else if (forma === 'misto') {
+    if (valor) {
+      const due = vencimento ? `, com vencimento ${contextualize(vencimento)}` : '';
+      bullets.push({ label: 'Parcela fixa', value: `Será devido o valor de R$ ${valor}${due}.` });
+    }
+    if (percentual) bullets.push({ label: 'Parcela de êxito', value: `Será devido o percentual de ${percentual}% sobre ${base}, ${successTiming}.` });
+  } else if (forma === 'exito' && percentual) {
+    bullets.push({ label: 'Honorários exclusivamente de êxito', value: `Será devido o percentual de ${percentual}% sobre ${base}, ${successTiming}.` });
+  } else if (forma === 'personalizado' && clean(p.pagamentoPersonalizado)) {
+    bullets.push({ label: null, value: clean(p.pagamentoPersonalizado) });
+  } else if (!forma && valor) {
+    const due = vencimento ? `, com vencimento ${contextualize(vencimento)}` : '';
+    bullets.push({ label: 'Honorários fixos', value: `Será devido o valor de R$ ${valor}${due}.` });
   }
 
   bullets.push({ label: 'Honorários de sucumbência', value: 'Pertencem integralmente à CONTRATADA.' });
@@ -616,20 +665,6 @@ function drawSection(doc, title, text, y) {
   return y + Math.max(27, 13 + lines.length * 5.1);
 }
 
-const ITALIC_TERMS = ['pro rata die'];
-
-function splitItalicSuffix(text) {
-  for (const term of ITALIC_TERMS) {
-    const idx = text.toLowerCase().lastIndexOf(term);
-    if (idx === -1) continue;
-    const after = text.slice(idx + term.length);
-    if (/^[.,;]?\s*$/.test(after)) {
-      return { before: text.slice(0, idx).trimEnd(), italic: text.slice(idx).trim() };
-    }
-  }
-  return null;
-}
-
 function drawLeadParagraph(doc, label, value, x, y, maxWidth, lineHeight) {
   if (!value && !label) return y;
   let cursorY = y;
@@ -639,19 +674,6 @@ function drawLeadParagraph(doc, label, value, x, y, maxWidth, lineHeight) {
     const labelLines = doc.splitTextToSize(label, maxWidth);
     doc.text(labelLines, x, cursorY, { lineHeightFactor: 1.18, align: 'justify', maxWidth });
     cursorY += labelLines.length * lineHeight;
-  }
-
-  const italicSplit = value ? splitItalicSuffix(value) : null;
-  if (italicSplit) {
-    doc.setFont('times', 'normal');
-    const lines = doc.splitTextToSize(italicSplit.before, maxWidth);
-    doc.text(lines, x, cursorY, { lineHeightFactor: 1.18, align: 'justify', maxWidth });
-    cursorY += lines.length * lineHeight;
-    doc.setFont('times', 'italic');
-    doc.text(italicSplit.italic, x, cursorY);
-    cursorY += lineHeight;
-    doc.setFont('times', 'normal');
-    return cursorY;
   }
 
   if (value) {
@@ -736,11 +758,11 @@ function drawCommsNote(doc, draft, y) {
   doc.text(lines, 105, y + 6, { align: 'center', lineHeightFactor: 1.25 });
   y += 6 + lines.length * 4.6;
 
-  if (clean(draft.params.entradaValor)) {
+  if (clean(draft.params.entradaValor) && ['vista', 'parcelado', 'misto'].includes(draft.params.entradaForma)) {
     if (y > 258) y = addContentPage(doc, 'CONTRATO DE HONORÁRIOS ADVOCATÍCIOS');
     doc.setFontSize(7.6);
     doc.setTextColor(140, 140, 142);
-    const footnote = 'Eventual valor pago a título de entrada possui natureza de remuneração pelos atos iniciais, análise do caso, orientação jurídica, atendimento, organização documental e demais providências já prestadas ou colocadas à disposição do CONTRATANTE, razão pela qual, em caso de desistência, revogação do mandato ou rescisão por iniciativa do CONTRATANTE, não será restituído, total ou parcialmente.';
+    const footnote = 'Eventual valor pago a título de honorários fixos remunera os atos iniciais, a análise do caso, a orientação jurídica, o atendimento, a organização documental e as demais providências já prestadas ou colocadas à disposição do CONTRATANTE, observada a proporcionalidade do trabalho realizado em caso de encerramento antecipado.';
     const fnLines = doc.splitTextToSize(footnote, WIDTH - 6);
     doc.text(fnLines, LEFT, y + 4, { lineHeightFactor: 1.2, align: 'justify', maxWidth: WIDTH - 6 });
     y += 4 + fnLines.length * 3.6;
@@ -883,16 +905,21 @@ function closeAllTips() {
 }
 
 document.querySelectorAll('.field-hint').forEach(hint => {
+  const showTip = () => {
+    if (hint.querySelector('.tip-bubble')) return;
+    closeAllTips();
+    const bubble = document.createElement('span');
+    bubble.className = 'tip-bubble';
+    bubble.textContent = hint.dataset.tip;
+    hint.appendChild(bubble);
+  };
   hint.addEventListener('click', event => {
     event.preventDefault();
     event.stopPropagation();
     const existing = hint.querySelector('.tip-bubble');
     closeAllTips();
     if (existing) return;
-    const bubble = document.createElement('span');
-    bubble.className = 'tip-bubble';
-    bubble.textContent = hint.dataset.tip;
-    hint.appendChild(bubble);
+    showTip();
   });
 });
 

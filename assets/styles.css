@@ -228,7 +228,7 @@ label {
   z-index: 30;
   bottom: calc(100% + 7px);
   left: 0;
-  width: 230px;
+  width: min(340px, calc(100vw - 48px));
   padding: 8px 10px;
   border-radius: 7px;
   background: var(--navy);
@@ -238,6 +238,29 @@ label {
   line-height: 1.4;
   box-shadow: 0 8px 20px rgba(23,33,58,.28);
 }
+
+.field-hint::after {
+  position: absolute;
+  z-index: 30;
+  bottom: calc(100% + 7px);
+  left: 0;
+  width: min(340px, calc(100vw - 48px));
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: var(--navy);
+  color: #fff;
+  content: attr(data-tip);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: 0 8px 20px rgba(23,33,58,.28);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.field-hint:hover::after { opacity: 1; visibility: visible; }
+.field-hint:has(.tip-bubble)::after { display: none; }
 
 .field-hint .tip-bubble[hidden] { display: none !important; }
 

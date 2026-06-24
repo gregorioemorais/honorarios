@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#17213a">
     <title>Gerador de Contrato de Honorários</title>
-    <link rel="stylesheet" href="./assets/styles.css?v=8">
+    <link rel="stylesheet" href="./assets/styles.css?v=9">
     <script src="./assets/jspdf.umd.min.js"></script>
-    <script src="./assets/app.js?v=8" defer></script>
+    <script src="./assets/app.js?v=9" defer></script>
   </head>
   <body>
     <header class="topbar">
@@ -37,8 +37,8 @@
 
             <div class="sub-legend">3. Honorários contratuais</div>
             <div class="field-grid">
-              <label>Valor (R$)<input name="params.entradaValor" inputmode="decimal"></label>
-              <label>Modalidade de pagamento
+              <label id="valor-field"><span id="valor-label">Valor dos honorários (R$)</span><input name="params.entradaValor" inputmode="decimal"></label>
+              <label>Modalidade de pagamento <span class="field-hint" data-tip="À vista: parcela única. Parcelado: valor total dividido em parcelas. Mensal: remuneração periódica por consultoria ou assessoria continuada. Por etapas ou atos: pagamento vinculado a marcos do serviço. Somente no êxito: percentual condicionado ao resultado. Fixo + êxito: combina uma parcela fixa com percentual sobre o resultado. Personalizada: redação inteiramente livre para condições específicas.">i</span>
                 <select name="params.entradaForma">
                   <option value="">Não informar</option>
                   <option value="vista">À vista</option>
@@ -51,10 +51,11 @@
                 </select>
               </label>
               <label id="parcelas-field" hidden>Número de parcelas<input name="params.entradaParcelas" inputmode="numeric"></label>
-              <label>Vencimento (data ou condição)<input name="params.entradaVencimento"></label>
+              <label id="vencimento-field"><span id="vencimento-label">Vencimento ou condição</span><input name="params.entradaVencimento"></label>
               <label id="pagamento-personalizado-field" class="span-2" hidden>Forma de pagamento personalizada<textarea name="params.pagamentoPersonalizado" rows="2" placeholder="Descreva valores, datas, periodicidade, etapas e condições"></textarea></label>
-              <label>Honorários de êxito (%)<input name="params.exitoPercentual" inputmode="decimal"></label>
-              <label class="span-2">Base de cálculo do êxito<input name="params.exitoBase" placeholder="valor principal, correção monetária e juros"></label>
+              <label id="exito-percentual-field" hidden>Honorários de êxito (%)<input name="params.exitoPercentual" inputmode="decimal"></label>
+              <label id="exito-base-field" class="span-2" hidden>Base de cálculo do êxito<input name="params.exitoBase" placeholder="proveito econômico efetivamente obtido"></label>
+              <label id="exito-condicao-field" class="span-2" hidden>Evento que caracteriza o êxito<input name="params.exitoCondicao" placeholder="Ex.: recebimento ou disponibilização do proveito econômico"></label>
             </div>
 
             <div class="field-grid">
